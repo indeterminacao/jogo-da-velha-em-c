@@ -2,19 +2,11 @@
 #include <stdlib.h>
 #include "funcs.h"
 
-typedef struct{
-    int resultado;
-    int empates;
-    int jogadas;
-    char simbolo;
-} Partidas;
-
 int main(){
     LimpaTerminal();
     Partidas *historico = NULL;
     int x, y, partidas = 0, lances = 0, jogo = 1, velha = 1, QuemVai = 1; 
     char res;
-    
     char tab[3][3];
 
     printf("### JOGO DA VELHA ###\n");
@@ -150,6 +142,9 @@ int main(){
         }
         printf(" (%d jogadas)\n", historico[i].jogadas);
     }
+
+    printf("\n\nPressione qualquer tecla para fechar...");
+    getchar();
 
     free(historico);
     return 0;

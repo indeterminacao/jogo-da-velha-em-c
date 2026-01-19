@@ -4,105 +4,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void LimpaTerminal(){
-#if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
-    system("clear");
-#endif
+/**
+ * @brief Estrutura para armazenar o histórico de cada partida.
+ */
+typedef struct {
+    int resultado;      // 1 ou 2 (Vencedor), 3 (Empate)
+    int empates;        // 1 se houve empate, 0 caso contrario
+    int jogadas;        // Quantidade total de lances
+    char simbolo;       // 'X', 'O' ou '-'
+} Partidas;
 
-#if defined(_WIN32) || defined(_WIN64)
-    system("cls");
-#endif
-}
+/**
+ * @brief Limpa a tela do terminal.
+ * Detecta automaticamente se o sistema é Windows ou Linux/Mac.
+ */
+void LimpaTerminal();
 
-void estrutura(char (*tab)[3]){
-    printf("     1   2   3\n");
-    printf("\n");
+/**
+ * @brief Desenha o tabuleiro 3x3 no terminal.
+ * @param tab Matriz do jogo atual.
+ */
+void estrutura(char (*tab)[3]);
 
-    for (int i = 0; i < 3; i++){
-        printf(" %d  ", i + 1);
-        for (int j = 0; j < 3; j++){
-            printf(" %c ", tab[i][j]);
-            if (j < 2){
-                printf("|");
-            }
-        }
-        printf("\n");
-        if (i < 2){
-            printf("    ---+---+---\n");
-        }
-    }
-    printf("\n");
-}
+/**
+ * @brief Registra a jogada na matriz e atualiza a interface.
+ * @param mapa Matriz do jogo.
+ * @param simbolo Caractere do jogador atual ('X' ou 'O').
+ * @param x Linha escolhida (1-3).
+ * @param y Coluna escolhida (1-3).
+ */
+void renderizacao(char (*mapa)[3], char simbolo, int x, int y);
 
-void renderizacao(char (*mapa)[3], char simbolo, int x, int y){
-    mapa[x - 1][y - 1] = simbolo;
-    LimpaTerminal();
-    estrutura(mapa);
-}
+/**
+ * @brief Verifica se a jogada é válida.
+ * @return 1: Sucesso | -1: Coordenada inválida | -2: Posição ocupada.
+ */
+int jogada(char (*mapa)[3], int x, int y);
 
-int jogada(char (*mapa)[3], int x, int y){
-    if ((x >= 1 && x <= 3) && (y >= 1 && y <= 3)) {
-        if (mapa[x - 1][y - 1] == '-'){
-            return 1;
-        } else {
-            return -2;
-        }
-    } else {
-        return -1;
-    }
-}
+/**
+ * @brief Verifica as condições de vitória ou empate.
+ * Utiliza lógica otimizada verificando o centro para as diagonais.
+ * @param tab Matriz do jogo.
+ * @param x Linha da última jogada.
+ * @param y Coluna da última jogada.
+ * @param lance Número total de jogadas realizadas.
+ * @return 0: Continua | 1: Vitória X | 2: Vitória O | 3: Empate.
+ */
+int vitoria(char (*tab)[3], int x, int y, int lance);
 
-int vitoria(char (*tab)[3], int x, int y, int lance){
-    if (lance < 4){
-        return 0;
-    } 
-    x--;
-    y--;
-
-    char atual = tab[x][y];
-
-    if (atual == '-') {
-        return 0;
-    }
-
-
-    if (tab[x][0] == atual && tab[x][1] == atual && tab[x][2] == atual){
-        if (atual == 'X'){
-            return 1;
-        } else {
-            return 2;
-        }
-    }
-
-    if (tab[0][y] == atual && tab[1][y] == atual && tab[2][y] == atual)
-    {
-        if (atual == 'X'){
-            return 1;
-        } else{
-            return 2;
-        }
-    }
-    if (tab[1][1] == atual){
-        if (tab[0][0] == atual && tab[2][2] == atual){
-            if (atual == 'X'){
-                return 1;
-            } else{
-                return 2;
-            }
-        }
-        if (tab[2][0] == atual && tab[0][2] == atual){
-            if (atual == 'X'){
-                return 1;
-            } else{
-                return 2;
-            }
-        }
-    }
-    
-    if (lance == 9){
-        return 3;
-    } else {
-        return 0;
-    }
-}
 #endif
